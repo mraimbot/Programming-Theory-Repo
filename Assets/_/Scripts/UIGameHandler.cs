@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -5,16 +6,31 @@ namespace _.Scripts
 {
     public class UIGameHandler : MonoBehaviour
     {
-        [SerializeField] private Text textScore;
-        
+        [SerializeField] private GameObject panelGameOver;
+
+        private void Start()
+        {
+            HideGameOver();
+        }
+
         public void OnBackToMenuClicked()
         {
             GameManager.Instance.LoadMenuScene();
         }
 
-        public void UpdateScoreText(int newScore)
+        public void OnRestartClicked()
         {
-            textScore.text = newScore.ToString();
+            GameManager.Instance.InitializeGame();
+        }
+
+        public void ShowGameOver()
+        {
+            panelGameOver.SetActive(true);
+        }
+        
+        public void HideGameOver()
+        {
+            panelGameOver.SetActive(false);
         }
     }
 }

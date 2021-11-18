@@ -108,7 +108,7 @@ namespace _.Scripts
 
         #endregion
         #region Game Handler
-
+        
         private void UpdateUIPlayerScore()
         {
             if (SceneManager.GetActiveScene().buildIndex != SCENE_GAME_ID) return;
@@ -124,6 +124,28 @@ namespace _.Scripts
         public void SpawnFood()
         {
             
+        }
+
+        public void GameOver()
+        {
+            if (SceneManager.GetActiveScene().buildIndex != SCENE_GAME_ID) return;
+            GameObject.Find("Canvas").GetComponent<UIGameHandler>().ShowGameOver();
+            UpdateHighScore();
+        }
+
+        private void UpdateHighScore()
+        {
+            
+        }
+
+        public void InitializeGame()
+        {
+            playerScore = 0;
+
+            GameObject.Find("Canvas").GetComponent<UIGameHandler>().HideGameOver();
+            GameObject.Find("Player").GetComponent<PlayerController>().Initialize();
+            
+            SpawnFood();
         }
 
         #endregion

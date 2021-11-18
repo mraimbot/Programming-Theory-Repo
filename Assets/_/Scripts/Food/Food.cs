@@ -6,10 +6,16 @@ namespace _.Scripts.Food
     public abstract class Food : MonoBehaviour
     {
         private const string TAG_PLAYER = "Player";
-        
+
+        [SerializeField] private float rotationSpeed;
         [SerializeField] private int score;
 
         protected abstract void DoOnCollision(PlayerController player);
+
+        private void Update()
+        {
+            transform.Rotate(Vector3.up, Time.deltaTime * rotationSpeed);
+        }
 
         private void OnTriggerEnter(Collider other)
         {
