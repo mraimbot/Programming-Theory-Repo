@@ -1825,6 +1825,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef21835ba280e2e4faf27bac1f4d8d06, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  foods:
+  - {fileID: 4818889317485519077, guid: ae42b95d338eeef47aae89f0bb8d0501, type: 3}
+  - {fileID: 4941676505877002373, guid: 9cff0059417c732449ab2b451ce692eb, type: 3}
+  - {fileID: 772116809009386298, guid: eeb99112b5a462c4ea6d50fbd55f2d75, type: 3}
+  foodSpawnBoundary: {x: 12, y: 23}
 --- !u!1 &1795636671
 GameObject:
   m_ObjectHideFlags: 0

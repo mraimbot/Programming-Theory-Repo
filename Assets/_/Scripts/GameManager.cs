@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Net.Mime;
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 namespace _.Scripts
 {
@@ -32,6 +32,9 @@ namespace _.Scripts
         private const int SCENE_MENU_ID = 0;
         private const int SCENE_GAME_ID = 1;
         private const string TAG_SCORE = "Score";
+
+        [SerializeField] private List<GameObject> foods;
+        [SerializeField] private Vector2 foodSpawnBoundary;
         
         public static GameManager Instance { get; private set; }
 
@@ -88,8 +91,18 @@ namespace _.Scripts
 
         public void LoadGameScene()
         {
+            SceneManager.sceneLoaded += OnSceneInitialized;
             SceneManager.LoadScene(SCENE_GAME_ID);
         }
+
+        private void OnSceneInitialized(Scene scene, LoadSceneMode mode)
+        {
+            if (scene.buildIndex == SCENE_GAME_ID)
+            {
+                InitializeGame();
+            }
+        }
+
 
         public void LoadMenuScene()
         {
@@ -123,7 +136,24 @@ namespace _.Scripts
 
         public void SpawnFood()
         {
+            var position = new Vector3(Random.Range(-foodSpawnBoundary.x, foodSpawnBoundary.x), 0.7f, Random.Range(-foodSpawnBoundary.y, foodSpawnBoundary.y));
+            var p = Random.Range(0.0f, 1.0f);
+            GameObject prefab;
             
+            if (p < 0.5f)
+            {
+                prefab = foods[0];
+            }
+            else if (p < 0.85f)
+            {
+                prefab = foods[1];
+            }
+            else
+            {
+                prefab = foods[2];
+            }
+
+            Instantiate(prefab, position, prefab.transform.rotation);
         }
 
         public void GameOver()
@@ -140,6 +170,12 @@ namespace _.Scripts
 
         public void InitializeGame()
         {
+            var activeFood = GameObject.FindGameObjectsWithTag("Food");
+            foreach (var food in activeFood)
+            {
+                Destroy(food);
+            }
+            
             playerScore = 0;
 
             GameObject.Find("Canvas").GetComponent<UIGameHandler>().HideGameOver();
