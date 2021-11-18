@@ -1,11 +1,14 @@
 using UnityEngine;
 
-public class MoveForward : MonoBehaviour
+namespace _.Scripts.Behaviour
 {
-    [SerializeField] private float moveSpeed;
-    
-    private void Update()
+    public class MoveForward : MonoBehaviour
     {
-        transform.Translate(Time.deltaTime * moveSpeed * Vector3.forward);
+        [SerializeField] private float moveSpeed;
+    
+        private void Update()
+        {
+            transform.Translate(Time.deltaTime * moveSpeed * Vector3.forward);
+        }
     }
 }

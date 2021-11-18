@@ -18,7 +18,7 @@ namespace _.Scripts
                 public void OnPlayClicked()
                 {
                         GameManager.Instance.PlayerName = textPlayerName.text;
-                        GameManager.LoadGameScene();
+                        GameManager.Instance.LoadGameScene();
                 }
 
                 public void OnExitClicked()

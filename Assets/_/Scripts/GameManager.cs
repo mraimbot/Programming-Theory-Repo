@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Net.Mime;
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace _.Scripts
 {
@@ -29,20 +31,33 @@ namespace _.Scripts
 
         private const int SCENE_MENU_ID = 0;
         private const int SCENE_GAME_ID = 1;
+        private const string TAG_SCORE = "Score";
         
         public static GameManager Instance { get; private set; }
+
+        private Text textScore = null;
         
         public List<HighScore> HighScores { get; private set; }
 
         private string playerName = "";
-
         public string PlayerName
         {
             get => playerName;
             set
             {
                 var playerNameTrimmed = value.Trim();
-                playerName = (playerNameTrimmed.Length <= 1 ? "NoName" : playerNameTrimmed);
+                playerName = playerNameTrimmed.Length <= 1 ? "NoName" : playerNameTrimmed;
+            }
+        }
+        
+        private int playerScore;
+        public int PlayerScore
+        {
+            get => playerScore;
+            set
+            {
+                playerScore = value >= 0 ? value : 0;
+                UpdateUIPlayerScore();
             }
         }
 
@@ -71,14 +86,15 @@ namespace _.Scripts
         #endregion
         #region Menu Handler
 
-        public static void LoadGameScene()
+        public void LoadGameScene()
         {
             SceneManager.LoadScene(SCENE_GAME_ID);
         }
 
-        public static void LoadMenuScene()
+        public void LoadMenuScene()
         {
             SceneManager.LoadScene(SCENE_MENU_ID);
+            textScore = null;
         }
 
         public static void QuitGame()
@@ -93,7 +109,22 @@ namespace _.Scripts
         #endregion
         #region Game Handler
 
-        
+        private void UpdateUIPlayerScore()
+        {
+            if (SceneManager.GetActiveScene().buildIndex != SCENE_GAME_ID) return;
+            
+            if (textScore == null)
+            {
+                textScore = GameObject.FindWithTag(TAG_SCORE).GetComponent<Text>();
+            }
+            
+            textScore.text = playerScore.ToString();
+        }
+
+        public void SpawnFood()
+        {
+            
+        }
 
         #endregion
         #region Data Handler

@@ -9,7 +9,7 @@ namespace _.Scripts
         
         public void OnBackToMenuClicked()
         {
-            GameManager.LoadMenuScene();
+            GameManager.Instance.LoadMenuScene();
         }
 
         public void UpdateScoreText(int newScore)
