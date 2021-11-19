@@ -5,6 +5,11 @@ TagManager:
   serializedVersion: 2
   tags:
   - Game Manager
+  - Food
+  - Score
+  - Game Over
+  - Body
+  - Border
   layers:
   - Default
   - TransparentFX
@@ -12,8 +17,8 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
+  - Body
+  - Head
   - 
   - 
   - 
