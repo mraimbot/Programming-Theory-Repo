@@ -1,8 +1,8 @@
 namespace _.Scripts.Food
 {
-    public class Potion : Food
+    public class Potion : Food // INHERITANCE
     {
-        protected override void DoOnCollision(PlayerController player)
+        protected override void DoOnCollision(PlayerController player) // POLYMORPHISM
         {
             player.RemoveBody();
         }

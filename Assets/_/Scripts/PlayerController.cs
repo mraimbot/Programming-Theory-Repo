@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 namespace _.Scripts
 {
     [RequireComponent(typeof(AudioSource))]
-    public class PlayerController : AutoMovement
+    public class PlayerController : AutoMovement // INHERITANCE
     {
         [SerializeField] private InputActionMap input;
         private InputAction moveAction;
@@ -20,7 +20,7 @@ namespace _.Scripts
 
         private AudioSource audioFood;
         
-        protected override void DoOnStart()
+        protected override void DoOnStart() // POLYMORPHISM
         {
             moveAction = input.FindAction("Move");
             moveAction.started += OnMoving;
@@ -33,7 +33,7 @@ namespace _.Scripts
             Initialize();
         }
         
-        protected override void DoOnUpdate()
+        protected override void DoOnUpdate() // POLYMORPHISM
         {
             if (!canRotate) return;
             transform.Rotate(Vector3.up, Time.deltaTime * direction * rotationSpeed);
@@ -65,7 +65,7 @@ namespace _.Scripts
             GameManager.Instance.GameOver();
         }
 
-        protected override void DoOnStopMovement()
+        protected override void DoOnStopMovement() // POLYMORPHISM
         {
             canRotate = false;
             if (body != null)

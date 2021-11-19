@@ -8,7 +8,7 @@ namespace _.Scripts.Food
         [SerializeField] private float rotationSpeed;
         [SerializeField] private int score;
             
-        protected abstract void DoOnCollision(PlayerController player);
+        protected abstract void DoOnCollision(PlayerController player); // POLYMORPHISM
 
         private void Update()
         {

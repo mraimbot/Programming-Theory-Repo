@@ -39,8 +39,8 @@ namespace _.Scripts
             DoOnStopMovement();
         }
 
-        protected virtual void DoOnStart() { /*do nothing by default*/ }
-        protected virtual void DoOnUpdate() { /*do nothing by default*/ }
-        protected virtual void DoOnStopMovement() { /*do nothing by default*/ }
+        protected virtual void DoOnStart() { /*do nothing by default*/ } // POLYMORPHISM
+        protected virtual void DoOnUpdate() { /*do nothing by default*/ } // POLYMORPHISM
+        protected virtual void DoOnStopMovement() { /*do nothing by default*/ } // POLYMORPHISM
     }
 }

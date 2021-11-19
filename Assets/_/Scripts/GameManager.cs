@@ -47,7 +47,7 @@ namespace _.Scripts
 
 
         private List<HighScore> highScores;
-        private List<HighScore> HighScores
+        private List<HighScore> HighScores // ENCAPSULATION
         {
             get
             {
@@ -68,7 +68,7 @@ namespace _.Scripts
         }
 
         private string playerName = "";
-        public string PlayerName
+        public string PlayerName // ENCAPSULATION
         {
             get => playerName;
             set
@@ -79,7 +79,7 @@ namespace _.Scripts
         }
         
         private int playerScore;
-        public int PlayerScore
+        public int PlayerScore // ENCAPSULATION
         {
             get => playerScore;
             set
@@ -110,7 +110,7 @@ namespace _.Scripts
         #endregion
         #region Menu Handler
 
-        public void LoadMenuScene()
+        public void LoadMenuScene() // ABSTRACTION
         {
             uiGameHandler = null;
             player = null;
@@ -135,7 +135,7 @@ namespace _.Scripts
         #endregion
         #region Game Handler
         
-        public void LoadGameScene()
+        public void LoadGameScene() // ABSTRACTION
         {
             uiMenuHandler = null;
             
@@ -151,7 +151,7 @@ namespace _.Scripts
             StartGame();
         }
         
-        public void StartGame()
+        public void StartGame() // ABSTRACTION
         {
             DestroyAllBodies();
             DestroyAllFood();
@@ -165,7 +165,7 @@ namespace _.Scripts
             SpawnFood();
         }
         
-        private static void DestroyAllBodies()
+        private static void DestroyAllBodies() // ABSTRACTION
         {
             var bodies = GameObject.FindGameObjectsWithTag("Body");
             foreach (var body in bodies)
@@ -174,7 +174,7 @@ namespace _.Scripts
             }
         }
         
-        private static void DestroyAllFood()
+        private static void DestroyAllFood() // ABSTRACTION
         {
             var food = GameObject.FindGameObjectsWithTag("Food");
             foreach (var foo in food)
@@ -183,19 +183,19 @@ namespace _.Scripts
             }
         }
 
-        public void SpawnFood()
+        public void SpawnFood() // ABSTRACTION
         {
             Instantiate(GetRandomPrefab(), GetRandomPosition(), Quaternion.identity);
         }
 
-        private Vector3 GetRandomPosition()
+        private Vector3 GetRandomPosition() // ABSTRACTION
         {
             return new Vector3(Random.Range(-foodSpawnBoundary.x, foodSpawnBoundary.x),
                 0.7f,
                 Random.Range(-foodSpawnBoundary.y, foodSpawnBoundary.y));
         }
 
-        private GameObject GetRandomPrefab()
+        private GameObject GetRandomPrefab() // ABSTRACTION
         {
             var p = Random.Range(0.0f, 1.0f);
             
@@ -209,7 +209,7 @@ namespace _.Scripts
                 : foods[(int)Food.Potion]; // 15% potions
         }
 
-        public void GameOver()
+        public void GameOver() // ABSTRACTION
         {
             // it's possible that the player hits multiple parts of the body in the end.
             // isGameOver prevents multiple calls of this method.
@@ -218,7 +218,7 @@ namespace _.Scripts
             uiGameHandler.ShowGameOver(UpdateHighScores()/*true: new high score*/);
         }
         
-        private bool UpdateHighScores()
+        private bool UpdateHighScores() // ABSTRACTION
         {
             for (var i = 0; i < HighScores.Count; i++)
             {
@@ -250,7 +250,7 @@ namespace _.Scripts
 
         private const string FILEPATH_HIGH_SCORE = "/highscores.json";
 
-        private void SaveData()
+        private void SaveData() // ABSTRACTION
         {
             var data = new GameData()
             {
@@ -261,7 +261,7 @@ namespace _.Scripts
             File.WriteAllText(Application.persistentDataPath + FILEPATH_HIGH_SCORE, json);
         }
 
-        private static List<HighScore> LoadData()
+        private static List<HighScore> LoadData() // ABSTRACTION
         {
             var newHighScores = new List<HighScore>();
             

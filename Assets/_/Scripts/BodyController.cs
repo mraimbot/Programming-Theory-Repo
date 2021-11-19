@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace _.Scripts
 {
-    public class BodyController : AutoMovement
+    public class BodyController : AutoMovement // INHERITANCE
     {
         [SerializeField] private GameObject prefabBody;
         [SerializeField] private GameObject nextTarget;
@@ -16,18 +16,18 @@ namespace _.Scripts
         private GameObject target;
         private BodyController nextBody;
 
-        protected override void DoOnStart()
+        protected override void DoOnStart() // POLYMORPHISM
         {
             StartMovement();
         }
 
-        protected override void DoOnUpdate()
+        protected override void DoOnUpdate() // POLYMORPHISM
         {
             UpdateScaling();
             LookAtTarget();
         }
 
-        private void LookAtTarget()
+        private void LookAtTarget() // ABSTRACTION
         {
             if (target == null)
             {
@@ -37,7 +37,7 @@ namespace _.Scripts
             transform.LookAt(target.transform, Vector3.up);
         }
 
-        private void UpdateScaling()
+        private void UpdateScaling() // ABSTRACTION
         {
             var tf = transform;
             var scale = tf.localScale.x;
@@ -58,7 +58,7 @@ namespace _.Scripts
             tf.localScale = new Vector3(newScale, 1.0f, newScale);
         }
         
-        public void AddBody()
+        public void AddBody() // ABSTRACTION
         {
             if (nextBody == null)
             {
@@ -71,7 +71,7 @@ namespace _.Scripts
             }
         }
 
-        public void RemoveBody()
+        public void RemoveBody() // ABSTRACTION
         {
             if (nextBody == null)
             {
@@ -83,7 +83,7 @@ namespace _.Scripts
             }
         }
 
-        protected override void DoOnStopMovement()
+        protected override void DoOnStopMovement() // POLYMORPHISM
         {
             if (nextBody != null)
             {
