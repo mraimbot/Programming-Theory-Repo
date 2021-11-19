@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 
 namespace _.Scripts
@@ -8,12 +7,11 @@ namespace _.Scripts
         [SerializeField] private GameObject prefabBody;
         [SerializeField] private GameObject nextTarget;
         
-        [SerializeField] private float nextBodySpawnDelay;
         [SerializeField] private float scaleBoundaryUp;
         [SerializeField] private float scaleBoundaryDown;
         [SerializeField] private float scaleSpeed;
         
-        private bool doGrow;
+        private bool isGrowing;
 
         private GameObject target;
         private BodyController nextBody;
@@ -47,31 +45,24 @@ namespace _.Scripts
             if (scale > scaleBoundaryUp)
             {
                 scale = scaleBoundaryUp;
-                doGrow = false;
+                isGrowing = false;
             }
             else if (scale < scaleBoundaryDown)
             {
                 scale = scaleBoundaryDown;
-                doGrow = true;
+                isGrowing = true;
             }
 
-            if (doGrow)
-            {
-                var newScale = scale + scaleSpeed * Time.deltaTime;
-                tf.localScale = new Vector3(newScale, 1.0f, newScale);
-            }
-            else
-            {
-                var newScale = scale - scaleSpeed * Time.deltaTime;
-                tf.localScale = new Vector3(newScale, 1.0f, newScale);
-            }
+            var scaleAdjustment = scaleSpeed * Time.deltaTime;
+            var newScale = scale + (isGrowing ? scaleAdjustment : -scaleAdjustment);
+            tf.localScale = new Vector3(newScale, 1.0f, newScale);
         }
         
         public void AddBody()
         {
             if (nextBody == null)
             {
-                nextBody = Instantiate(prefabBody, nextTarget.transform.position, prefabBody.transform.rotation).GetComponent<BodyController>();
+                nextBody = Instantiate(prefabBody, nextTarget.transform.position, Quaternion.identity).GetComponent<BodyController>();
                 nextBody.target = nextTarget;
             }
             else

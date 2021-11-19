@@ -1,9 +1,9 @@
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace _.Scripts
 {
+    [RequireComponent(typeof(AudioSource))]
     public class PlayerController : AutoMovement
     {
         [SerializeField] private InputActionMap input;
@@ -11,12 +11,14 @@ namespace _.Scripts
 
         [SerializeField] private GameObject prefabBody;
         [SerializeField] private GameObject nextTarget;
-        private BodyController body = null;
+        private BodyController body;
         
         [SerializeField] private Transform startPosition;
         [SerializeField] private float rotationSpeed;
         private float direction;
         private bool canRotate;
+
+        private new AudioSource audio;
         
         protected override void DoOnStart()
         {
@@ -26,19 +28,15 @@ namespace _.Scripts
             moveAction.Enable();
             input.Enable();
 
+            audio = GetComponent<AudioSource>();
+
             Initialize();
         }
-
+        
         protected override void DoOnUpdate()
         {
             if (!canRotate) return;
             transform.Rotate(Vector3.up, Time.deltaTime * direction * rotationSpeed);
-        }
-
-        private void OnCollisionEnter(Collision other)
-        {
-            if (!other.gameObject.CompareTag("Border") && !other.gameObject.CompareTag("Body")) return;
-            GameOver();
         }
 
         private void OnMoving(InputAction.CallbackContext context)
@@ -46,27 +44,34 @@ namespace _.Scripts
             direction = context.ReadValue<float>();
         }
 
-        private void GameOver()
-        {
-            canRotate = false;
-            StopMovement();
-            if (body != null)
-            {
-                body.StopMovement();
-            }
-            GameManager.Instance.GameOver();
-        }
-
         public void Initialize()
         {
-            direction = 0.0f;
-            
             var tf = transform;
             tf.position = startPosition.position;
             tf.rotation = startPosition.rotation;
             
             StartMovement();
             canRotate = true;
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            audio.Play();
+        }
+
+        private void OnCollisionEnter()
+        {
+            StopMovement();
+            GameManager.Instance.GameOver();
+        }
+
+        protected override void DoOnStopMovement()
+        {
+            canRotate = false;
+            if (body != null)
+            {
+                body.StopMovement();
+            }
         }
 
         public void AddBody()
