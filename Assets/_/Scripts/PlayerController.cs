@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -9,7 +10,10 @@ namespace _.Scripts
         [SerializeField] private InputActionMap input;
         private InputAction moveAction;
 
-        [SerializeField] private GameObject startPosition;
+        [SerializeField] private GameObject prefabBody;
+        private List<GameObject> bodyTiles;
+        
+        [SerializeField] private Transform startPosition;
         [SerializeField] private float moveSpeed;
         [SerializeField] private float rotationSpeed;
         private float direction;
@@ -71,16 +75,18 @@ namespace _.Scripts
             canMove = true;
             direction = 0.0f;
             
-            var startTransform = GameObject.Find("Target - Player Start Position").transform;
             var tf = transform;
             
-            tf.position = startTransform.position;
-            tf.rotation = startTransform.rotation;
+            tf.position = startPosition.position;
+            tf.rotation = startPosition.rotation;
         }
 
         public void AddBodyTile()
         {
-        
+            var body = Instantiate(prefabBody, Vector3.positiveInfinity, prefabBody.transform.rotation);
+            var bodyController = body.GetComponent<BodyController>();
+
+            bodyController.Target = bodyTiles.Count == 0 ? gameObject : bodyTiles[bodyTiles.Count - 1];
         }
 
         public void RemoveBodyTile()

@@ -9,7 +9,7 @@ public class BodyController : MonoBehaviour
     [SerializeField] private float scaleSpeed;
     private bool doGrow;
     
-    private GameObject target;
+    public GameObject Target { get; set; }
 
     private void Update()
     {
