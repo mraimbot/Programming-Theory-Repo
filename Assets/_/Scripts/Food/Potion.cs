@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace _.Scripts.Food
 {
     public class Potion : Food

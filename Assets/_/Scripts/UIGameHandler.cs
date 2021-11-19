@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,6 +5,7 @@ namespace _.Scripts
 {
     public class UIGameHandler : MonoBehaviour
     {
+        [SerializeField] private Text textScore;
         [SerializeField] private GameObject panelGameOver;
         [SerializeField] private GameObject textHighScore;
 
@@ -14,14 +14,9 @@ namespace _.Scripts
             HideGameOver();
         }
 
-        public void OnBackToMenuClicked()
+        public void SetTextScore(int score)
         {
-            GameManager.Instance.LoadMenuScene();
-        }
-
-        public void OnRestartClicked()
-        {
-            GameManager.Instance.StartGame();
+            textScore.text = score.ToString();
         }
 
         public void ShowGameOver(bool newHighScore)
@@ -34,6 +29,16 @@ namespace _.Scripts
         {
             panelGameOver.SetActive(false);
             textHighScore.SetActive(false);
+        }
+        
+        public void OnBackToMenuClicked()
+        {
+            GameManager.Instance.LoadMenuScene();
+        }
+
+        public void OnRestartClicked()
+        {
+            GameManager.Instance.StartGame();
         }
     }
 }
