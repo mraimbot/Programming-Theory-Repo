@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.InteropServices;
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -14,6 +16,7 @@ namespace _.Scripts
     {
         #region Data Structures
 
+        [Serializable]
         public struct HighScore
         {
             public string name;
@@ -23,7 +26,7 @@ namespace _.Scripts
         [Serializable]
         public class GameData
         {
-            public List<HighScore> highScores;
+            public HighScore[] highScores;
         }
 
         #endregion
@@ -39,8 +42,27 @@ namespace _.Scripts
         public static GameManager Instance { get; private set; }
 
         private Text textScore = null;
-        
-        public List<HighScore> HighScores { get; private set; }
+
+        private List<HighScore> highScores = null;
+        public List<HighScore> HighScores
+        {
+            get
+            {
+                if (highScores != null) return highScores;
+                
+                highScores = LoadData();
+                
+                if (highScores.Count != 0) return highScores;
+                
+                for (var i = 0; i < 10; i++)
+                {
+                    HighScores.Add(new HighScore() { name = "NoName", score = 0});
+                }
+
+                return highScores;
+            }
+            private set => highScores = value;
+        }
 
         private string playerName = "";
         public string PlayerName
@@ -64,6 +86,8 @@ namespace _.Scripts
             }
         }
 
+        private bool isGameOver;
+
         #endregion
         #region Singleton
         
@@ -75,39 +99,40 @@ namespace _.Scripts
                 return;
             }
 
-            Initialize();
-            
             DontDestroyOnLoad(gameObject);
             Instance = this;
         }
 
-        private void Initialize()
-        {
-            LoadData();
-        }
-        
         #endregion
         #region Menu Handler
 
         public void LoadGameScene()
         {
-            SceneManager.sceneLoaded += OnSceneInitialized;
+            SceneManager.sceneLoaded -= OnMenuSceneInitialized;
+            SceneManager.sceneLoaded += OnGameSceneInitialized;
             SceneManager.LoadScene(SCENE_GAME_ID);
         }
 
-        private void OnSceneInitialized(Scene scene, LoadSceneMode mode)
+        private void OnGameSceneInitialized(Scene scene, LoadSceneMode mode)
         {
             if (scene.buildIndex == SCENE_GAME_ID)
             {
-                InitializeGame();
+                StartGame();
             }
         }
 
 
         public void LoadMenuScene()
         {
+            SceneManager.sceneLoaded -= OnGameSceneInitialized;
+            SceneManager.sceneLoaded += OnMenuSceneInitialized;
             SceneManager.LoadScene(SCENE_MENU_ID);
             textScore = null;
+        }
+
+        private void OnMenuSceneInitialized(Scene scene, LoadSceneMode mode)
+        {
+            GameObject.Find("Canvas").GetComponent<UIMenuHandler>().UpdateHighScores();
         }
 
         public static void QuitGame()
@@ -158,25 +183,66 @@ namespace _.Scripts
 
         public void GameOver()
         {
-            if (SceneManager.GetActiveScene().buildIndex != SCENE_GAME_ID) return;
-            GameObject.Find("Canvas").GetComponent<UIGameHandler>().ShowGameOver();
-            UpdateHighScore();
-        }
-
-        private void UpdateHighScore()
-        {
+            // prevents colliders of the body to set multiple high scores.
+            if (isGameOver) return;
+            isGameOver = true;
             
+            if (SceneManager.GetActiveScene().buildIndex != SCENE_GAME_ID) return;
+            GameObject.Find("Canvas").GetComponent<UIGameHandler>().ShowGameOver(UpdateHighScore());
         }
 
-        public void InitializeGame()
+        private void DestroyAllBodies()
+        {
+            var bodies = GameObject.FindGameObjectsWithTag("Body");
+            foreach (var body in bodies)
+            {
+                Destroy(body);
+            }
+        }
+        
+        private void DestroyAllFood()
         {
             var activeFood = GameObject.FindGameObjectsWithTag("Food");
             foreach (var food in activeFood)
             {
                 Destroy(food);
             }
+        }
+
+        private bool UpdateHighScore()
+        {
+            for (var i = 0; i < HighScores.Count; i++)
+            {
+                if (playerScore <= HighScores[i].score) continue;
+                
+                var highScore = new HighScore()
+                {
+                    name = playerName,
+                    score = playerScore
+                };
+                    
+                HighScores.Insert(i, highScore);
+
+                if (HighScores.Count == 11)
+                {
+                    HighScores.RemoveAt(HighScores.Count - 1);
+                }
+                
+                SaveData();
+                    
+                return true;
+            }
+
+            return false;
+        }
+
+        public void StartGame()
+        {
+            isGameOver = false;
+            DestroyAllBodies();
+            DestroyAllFood();
             
-            playerScore = 0;
+            PlayerScore = 0;
 
             GameObject.Find("Canvas").GetComponent<UIGameHandler>().HideGameOver();
             GameObject.Find("Player").GetComponent<PlayerController>().Initialize();
@@ -187,15 +253,31 @@ namespace _.Scripts
         #endregion
         #region Data Handler
 
-        public void SaveData()
+        private void SaveData()
         {
-            // TODO GameManager.SaveData
+            var data = new GameData()
+            {
+                highScores = HighScores.ToArray()
+            };
+
+            var json = JsonUtility.ToJson(data);
+            File.WriteAllText(Application.persistentDataPath + "/highscores.json", json);
         }
 
-        public bool LoadData()
+        private static List<HighScore> LoadData()
         {
-            // TODO GameManager.LoadData
-            return false;
+            var newHighScores = new List<HighScore>();
+            
+            if (!File.Exists(Application.persistentDataPath + "/highscores.json")) return newHighScores;
+            
+            var json = File.ReadAllText(Application.persistentDataPath + "/highscores.json");
+            var data = JsonUtility.FromJson<GameData>(json);
+
+            if (data == null) return newHighScores;
+
+            newHighScores.AddRange(data.highScores);
+
+            return newHighScores;
         }
 
         #endregion

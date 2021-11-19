@@ -1,44 +1,103 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class BodyController : MonoBehaviour
+namespace _.Scripts
 {
-    [SerializeField] private float scaleBoundaryUp;
-    [SerializeField] private float scaleBoundaryDown;
-    [SerializeField] private float scaleSpeed;
-    private bool doGrow;
-    
-    public GameObject Target { get; set; }
-
-    private void Update()
+    public class BodyController : AutoMovement
     {
-        UpdateScaling();
-    }
+        [SerializeField] private GameObject prefabBody;
+        [SerializeField] private GameObject nextTarget;
+        
+        [SerializeField] private float nextBodySpawnDelay;
+        [SerializeField] private float scaleBoundaryUp;
+        [SerializeField] private float scaleBoundaryDown;
+        [SerializeField] private float scaleSpeed;
+        
+        private bool doGrow;
 
-    private void UpdateScaling()
-    {
-        var tf = transform;
-        var scale = tf.localScale.x;
+        private GameObject target;
+        private BodyController nextBody;
 
-        if (scale > scaleBoundaryUp)
+        protected override void DoOnStart()
         {
-            scale = scaleBoundaryUp;
-            doGrow = false;
-        }
-        else if (scale < scaleBoundaryDown)
-        {
-            scale = scaleBoundaryDown;
-            doGrow = true;
+            StartMovement();
         }
 
-        if (doGrow)
+        protected override void DoOnUpdate()
         {
-            tf.localScale = Vector3.one * (scale + scaleSpeed * Time.deltaTime);
+            UpdateScaling();
+            LookAtTarget();
         }
-        else
+
+        private void LookAtTarget()
         {
-            tf.localScale = Vector3.one * (scale - scaleSpeed * Time.deltaTime);
+            if (target == null)
+            {
+                target = GameObject.Find("Target Player");
+                return;
+            }
+            transform.LookAt(target.transform, Vector3.up);
+        }
+
+        private void UpdateScaling()
+        {
+            var tf = transform;
+            var scale = tf.localScale.x;
+
+            if (scale > scaleBoundaryUp)
+            {
+                scale = scaleBoundaryUp;
+                doGrow = false;
+            }
+            else if (scale < scaleBoundaryDown)
+            {
+                scale = scaleBoundaryDown;
+                doGrow = true;
+            }
+
+            if (doGrow)
+            {
+                var newScale = scale + scaleSpeed * Time.deltaTime;
+                tf.localScale = new Vector3(newScale, 1.0f, newScale);
+            }
+            else
+            {
+                var newScale = scale - scaleSpeed * Time.deltaTime;
+                tf.localScale = new Vector3(newScale, 1.0f, newScale);
+            }
+        }
+        
+        public void AddBody()
+        {
+            if (nextBody == null)
+            {
+                nextBody = Instantiate(prefabBody, nextTarget.transform.position, prefabBody.transform.rotation).GetComponent<BodyController>();
+                nextBody.target = nextTarget;
+            }
+            else
+            {
+                nextBody.AddBody();
+            }
+        }
+
+        public void RemoveBody()
+        {
+            if (nextBody == null)
+            {
+                Destroy(gameObject);
+            }
+            else
+            {
+                nextBody.RemoveBody();
+            }
+        }
+
+        protected override void DoOnStopMovement()
+        {
+            if (nextBody != null)
+            {
+                nextBody.StopMovement();
+            }
         }
     }
 }

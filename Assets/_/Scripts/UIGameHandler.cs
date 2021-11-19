@@ -7,6 +7,7 @@ namespace _.Scripts
     public class UIGameHandler : MonoBehaviour
     {
         [SerializeField] private GameObject panelGameOver;
+        [SerializeField] private GameObject textHighScore;
 
         private void Start()
         {
@@ -20,17 +21,19 @@ namespace _.Scripts
 
         public void OnRestartClicked()
         {
-            GameManager.Instance.InitializeGame();
+            GameManager.Instance.StartGame();
         }
 
-        public void ShowGameOver()
+        public void ShowGameOver(bool newHighScore)
         {
             panelGameOver.SetActive(true);
+            textHighScore.SetActive(newHighScore);
         }
         
         public void HideGameOver()
         {
             panelGameOver.SetActive(false);
+            textHighScore.SetActive(false);
         }
     }
 }

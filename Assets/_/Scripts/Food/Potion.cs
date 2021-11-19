@@ -6,7 +6,7 @@ namespace _.Scripts.Food
     {
         protected override void DoOnCollision(PlayerController player)
         {
-            player.RemoveBodyTile();
+            player.RemoveBody();
         }
     }
 }

@@ -13,6 +13,7 @@ namespace _.Scripts
                 private void Start()
                 {
                         textPlayerName.text = GameManager.Instance.PlayerName;
+                        UpdateHighScores();
                 }
 
                 public void OnPlayClicked()
@@ -26,13 +27,13 @@ namespace _.Scripts
                         GameManager.QuitGame();
                 }
 
-                private void UpdateHighScores()
+                public void UpdateHighScores()
                 {
                         var highScores = GameManager.Instance.HighScores;
                         for (var i = 0; i < highScores.Count; i++)
                         {
                                 var highScore = highScores[i];
-                                textHighScores[i].text = i + ". " + highScore.name + "(" + highScore.score + ")";
+                                textHighScores[i].text = i+1 + ". " + highScore.name + " (" + highScore.score + ")";
                         }
                 }
         }

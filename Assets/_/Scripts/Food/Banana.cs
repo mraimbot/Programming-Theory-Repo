@@ -4,7 +4,7 @@ namespace _.Scripts.Food
     {
         protected override void DoOnCollision(PlayerController player)
         {
-            player.AddBodyTile();
+            player.AddBody();
         }
     }
 }
