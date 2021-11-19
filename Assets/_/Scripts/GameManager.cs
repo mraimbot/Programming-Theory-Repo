@@ -103,19 +103,8 @@ namespace _.Scripts
             DontDestroyOnLoad(gameObject);
             Instance = this;
 
-#if UNITY_EDITOR
-            if (SceneManager.GetActiveScene().buildIndex == SCENE_MENU_ID)
-            {
-#endif
-                uiMenuHandler = GameObject.Find("Canvas").GetComponent<UIMenuHandler>();
-                uiMenuHandler.SetTextHighScores(HighScores);
-#if UNITY_EDITOR
-            }
-            else
-            {
-                uiGameHandler = GameObject.Find("Canvas").GetComponent<UIGameHandler>();
-            }
-#endif
+            uiMenuHandler = GameObject.Find("Canvas").GetComponent<UIMenuHandler>();
+            uiMenuHandler.SetTextHighScores(HighScores);
         }
 
         #endregion
@@ -140,11 +129,7 @@ namespace _.Scripts
 
         public static void QuitGame()
         {
-#if UNITY_EDITOR
-            EditorApplication.ExitPlaymode();
-#else
             Application.Quit();
-#endif
         }
 
         #endregion

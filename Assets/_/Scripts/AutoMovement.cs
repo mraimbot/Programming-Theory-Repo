@@ -7,11 +7,11 @@ namespace _.Scripts
     {
         [SerializeField] private float moveSpeed;
         private bool canMove;
-        private new Rigidbody rigidbody; // 'new' to override the obsolete member rigidbody
+        private  Rigidbody rb; // 'new' to override the obsolete member rigidbody
 
         private void Start()
         {
-            rigidbody = GetComponent<Rigidbody>();
+            rb = GetComponent<Rigidbody>();
             DoOnStart();
         }
 
@@ -24,7 +24,7 @@ namespace _.Scripts
         private void Move()
         {
             if (!canMove) return;
-            rigidbody.velocity = moveSpeed * transform.forward; // move forward
+            rb.velocity = moveSpeed * transform.forward; // move forward
         }
 
         protected void StartMovement()
@@ -34,7 +34,7 @@ namespace _.Scripts
 
         public void StopMovement()
         {
-            rigidbody.velocity = Vector3.zero; // stop movement
+            rb.velocity = Vector3.zero; // stop movement
             canMove = false;
             DoOnStopMovement();
         }

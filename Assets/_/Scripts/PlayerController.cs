@@ -18,7 +18,7 @@ namespace _.Scripts
         private float direction;
         private bool canRotate;
 
-        private new AudioSource audio;
+        private AudioSource audioFood;
         
         protected override void DoOnStart()
         {
@@ -28,7 +28,7 @@ namespace _.Scripts
             moveAction.Enable();
             input.Enable();
 
-            audio = GetComponent<AudioSource>();
+            audioFood = GetComponent<AudioSource>();
 
             Initialize();
         }
@@ -56,7 +56,7 @@ namespace _.Scripts
 
         private void OnTriggerEnter(Collider other)
         {
-            audio.Play();
+            audioFood.Play();
         }
 
         private void OnCollisionEnter()
